@@ -88,7 +88,7 @@ export default function StudentDetailPage() {
         actions={
           <div className="flex items-center gap-2">
             <Link
-              href={`/students/${id}/baptismal-card`}
+              href={`/students/${id}/baptismal-card?print=1`}
               className="flex items-center gap-2 border border-[#1e3a5f] text-[#1e3a5f] px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
             >
               <Printer size={15} /> Baptismal Card

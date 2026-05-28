@@ -5,7 +5,7 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import ImportPanel from "@/components/ImportPanel";
 import { fullName, formatDate, formatRegisterRef } from "@/lib/utils";
-import { Plus, Upload, Search, Eye } from "lucide-react";
+import { Plus, Upload, Search, Eye, Printer } from "lucide-react";
 
 interface BaptismRecord {
   id: string;
@@ -108,9 +108,14 @@ export default function BaptismPage() {
                     {r.godfatherName} / {r.godmotherName}
                   </td>
                   <td className="px-6 py-4 text-center">
-                    <Link href={`/baptism/${r.id}`} className="inline-flex items-center gap-1 text-xs text-[#1e3a5f] hover:underline font-medium">
-                      <Eye size={14} /> View
-                    </Link>
+                    <div className="flex items-center justify-center gap-3">
+                      <Link href={`/baptism/${r.id}`} className="inline-flex items-center gap-1 text-xs text-[#1e3a5f] hover:underline font-medium">
+                        <Eye size={14} /> View
+                      </Link>
+                      <Link href={`/students/${r.student.id}/baptismal-card?print=1`} className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:underline font-medium">
+                        <Printer size={14} /> Print Card
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               ))}

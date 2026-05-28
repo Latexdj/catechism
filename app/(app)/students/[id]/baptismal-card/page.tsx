@@ -222,10 +222,23 @@ function CardContent({ student }: { student: StudentDetail }) {
 export default function BaptismalCardPage() {
   const { id } = useParams<{ id: string }>();
   const [student, setStudent] = useState<StudentDetail | null>(null);
+  const [autoPrint, setAutoPrint] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/students/${id}`).then((r) => r.json()).then(setStudent);
-  }, [id]);
+    // Check if opened with ?print=1 (from the Print Card shortcut)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("print") === "1") setAutoPrint(true);
+  }, []);
+
+  useEffect(() => {
+    fetch(`/api/students/${id}`).then((r) => r.json()).then((data) => {
+      setStudent(data);
+      // Auto-trigger print once data is loaded
+      if (autoPrint) {
+        setTimeout(() => window.print(), 300);
+      }
+    });
+  }, [id, autoPrint]);
 
   if (!student) {
     return <div className="flex-1 flex items-center justify-center"><p className="text-gray-400">Loading...</p></div>;
