@@ -11,7 +11,6 @@ import {
   BookOpen,
   ScrollText,
   Search,
-  Upload,
   LogOut,
   ChevronRight,
 } from "lucide-react";
@@ -24,7 +23,6 @@ const navItems = [
   { href: "/classes",      label: "Classes & Cohorts",     icon: BookOpen },
   { href: "/certificates", label: "Certificates",          icon: ScrollText },
   { href: "/reports",      label: "Reports & Search",      icon: Search },
-  { href: "/import",       label: "Import Records",        icon: Upload },
 ];
 
 export default function Sidebar() {

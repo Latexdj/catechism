@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { BookOpen, ScrollText, Search, Upload, LogOut } from "lucide-react";
+import { BookOpen, ScrollText, Search, LogOut } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const moreItems = [
   { href: "/classes",      label: "Classes & Cohorts", icon: BookOpen },
   { href: "/certificates", label: "Certificates",      icon: ScrollText },
   { href: "/reports",      label: "Reports & Search",  icon: Search },
-  { href: "/import",       label: "Import Records",    icon: Upload },
 ];
 
 interface Props {

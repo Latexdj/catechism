@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
+import ImportPanel from "@/components/ImportPanel";
 import { fullName, formatDate, formatRegisterRef } from "@/lib/utils";
-import { Plus, Search, Eye } from "lucide-react";
+import { Plus, Upload, Search, Eye } from "lucide-react";
 
 interface BaptismRecord {
   id: string;
@@ -21,13 +22,16 @@ export default function BaptismPage() {
   const [records, setRecords] = useState<BaptismRecord[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
 
-  useEffect(() => {
+  const loadRecords = useCallback(() => {
     setLoading(true);
     fetch(`/api/baptism?search=${encodeURIComponent(search)}`)
       .then((r) => r.json())
       .then((data) => { setRecords(data); setLoading(false); });
   }, [search]);
+
+  useEffect(() => { loadRecords(); }, [loadRecords]);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -35,14 +39,30 @@ export default function BaptismPage() {
         title="Baptism Records"
         subtitle={`${records.length} record${records.length !== 1 ? "s" : ""}`}
         actions={
-          <Link
-            href="/baptism/new"
-            className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
-          >
-            <Plus size={16} /> New Record
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setImportOpen(true)}
+              className="flex items-center gap-2 border border-[#1e3a5f] text-[#1e3a5f] px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+            >
+              <Upload size={15} /> Upload Records
+            </button>
+            <Link
+              href="/baptism/new"
+              className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
+            >
+              <Plus size={16} /> New Record
+            </Link>
+          </div>
         }
       />
+
+      <ImportPanel
+        type="baptism"
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onSuccess={loadRecords}
+      />
+
       <div className="p-4 sm:p-8">
         <div className="mb-6 relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -62,9 +82,9 @@ export default function BaptismPage() {
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Register Ref.</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Name</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Date of Baptism</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Place</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Minister</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Godparents</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600 hidden md:table-cell">Place</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600 hidden md:table-cell">Minister</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600 hidden lg:table-cell">Godparents</th>
                 <th className="text-center px-6 py-3 font-semibold text-gray-600">Actions</th>
               </tr>
             </thead>
@@ -82,9 +102,9 @@ export default function BaptismPage() {
                     </Link>
                   </td>
                   <td className="px-6 py-4 text-gray-500">{formatDate(r.dateOfBaptism)}</td>
-                  <td className="px-6 py-4 text-gray-500">{r.placeOfBaptism}</td>
-                  <td className="px-6 py-4 text-gray-500">{r.minister}</td>
-                  <td className="px-6 py-4 text-gray-500 text-xs">
+                  <td className="px-6 py-4 text-gray-500 hidden md:table-cell">{r.placeOfBaptism}</td>
+                  <td className="px-6 py-4 text-gray-500 hidden md:table-cell">{r.minister}</td>
+                  <td className="px-6 py-4 text-gray-500 text-xs hidden lg:table-cell">
                     {r.godfatherName} / {r.godmotherName}
                   </td>
                   <td className="px-6 py-4 text-center">

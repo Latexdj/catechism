@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Header from "@/components/Header";
+import ImportPanel from "@/components/ImportPanel";
 import { fullName, formatDate } from "@/lib/utils";
-import { Plus, Search, Droplets, Flame, Eye } from "lucide-react";
+import { Plus, Upload, Search, Droplets, Flame, Eye } from "lucide-react";
 
 interface Student {
   id: string;
@@ -23,13 +24,16 @@ export default function StudentsPage() {
   const [students, setStudents] = useState<Student[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [importOpen, setImportOpen] = useState(false);
 
-  useEffect(() => {
+  const loadStudents = useCallback(() => {
     setLoading(true);
     fetch(`/api/students?search=${encodeURIComponent(search)}`)
       .then((r) => r.json())
       .then((data) => { setStudents(data); setLoading(false); });
   }, [search]);
+
+  useEffect(() => { loadStudents(); }, [loadStudents]);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -37,13 +41,28 @@ export default function StudentsPage() {
         title="Students"
         subtitle={`${students.length} registered student${students.length !== 1 ? "s" : ""}`}
         actions={
-          <Link
-            href="/students/new"
-            className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
-          >
-            <Plus size={16} /> Add Student
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setImportOpen(true)}
+              className="flex items-center gap-2 border border-[#1e3a5f] text-[#1e3a5f] px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+            >
+              <Upload size={15} /> Upload Records
+            </button>
+            <Link
+              href="/students/new"
+              className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
+            >
+              <Plus size={16} /> Add Student
+            </Link>
+          </div>
         }
+      />
+
+      <ImportPanel
+        type="students"
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onSuccess={loadStudents}
       />
 
       <div className="p-4 sm:p-8">
@@ -64,8 +83,8 @@ export default function StudentsPage() {
               <tr>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Name</th>
                 <th className="text-left px-6 py-3 font-semibold text-gray-600">Date of Birth</th>
-                <th className="text-left px-6 py-3 font-semibold text-gray-600">Class</th>
-                <th className="text-center px-6 py-3 font-semibold text-gray-600">Sacraments</th>
+                <th className="text-left px-6 py-3 font-semibold text-gray-600 hidden sm:table-cell">Class</th>
+                <th className="text-center px-6 py-3 font-semibold text-gray-600 hidden sm:table-cell">Sacraments</th>
                 <th className="text-center px-6 py-3 font-semibold text-gray-600">Actions</th>
               </tr>
             </thead>
@@ -80,17 +99,17 @@ export default function StudentsPage() {
                 <tr key={s.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 font-medium text-gray-800">{fullName(s)}</td>
                   <td className="px-6 py-4 text-gray-500">{formatDate(s.dateOfBirth)}</td>
-                  <td className="px-6 py-4 text-gray-500">
+                  <td className="px-6 py-4 text-gray-500 hidden sm:table-cell">
                     {s.classMembers[0]
                       ? `${s.classMembers[0].class.name} (${s.classMembers[0].class.year})`
                       : "—"}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 hidden sm:table-cell">
                     <div className="flex items-center justify-center gap-2">
-                      <span title="Baptism" className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${s.baptism ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-400"}`}>
+                      <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${s.baptism ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-400"}`}>
                         <Droplets size={12} /> Baptism
                       </span>
-                      <span title="Confirmation" className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${s.confirmation ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}>
+                      <span className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${s.confirmation ? "bg-amber-100 text-amber-700" : "bg-gray-100 text-gray-400"}`}>
                         <Flame size={12} /> Confirmation
                       </span>
                     </div>
