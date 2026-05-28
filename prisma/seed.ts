@@ -1,15 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
-import path from "path";
 
-function getDbUrl(): string {
-  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
-  return `file:${path.resolve(process.cwd(), "dev.db")}`;
-}
-
-const adapter = new PrismaBetterSqlite3({ url: getDbUrl() });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 
 async function main() {
   const password = await bcrypt.hash("parish2024", 10);

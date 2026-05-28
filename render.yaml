@@ -2,21 +2,16 @@ services:
   - type: web
     name: catechism
     runtime: node
-    plan: starter          # Starter ($7/mo) — required for persistent disk
+    plan: free
     buildCommand: npm ci && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && npx tsx prisma/seed.ts && npm start
+    startCommand: npx prisma db push && npx tsx prisma/seed.ts && npm start
     healthCheckPath: /login
     envVars:
       - key: DATABASE_URL
-        value: file:/data/catechism.db   # Points to the persistent disk
+        sync: false        # Paste your Neon PostgreSQL connection string here
       - key: NODE_ENV
         value: production
       - key: NEXTAUTH_SECRET
-        generateValue: true              # Render auto-generates a secure secret
+        generateValue: true
       - key: NEXTAUTH_URL
-        sync: false                      # You set this after first deploy (your .onrender.com URL)
-
-    disk:
-      name: catechism-db
-      mountPath: /data
-      sizeGB: 1
+        sync: false        # Set to your Render URL, e.g. https://catechism.onrender.com
