@@ -11,7 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 flex flex-col overflow-auto pb-16 lg:pb-0">
+      <main className="flex-1 flex flex-col overflow-auto pb-20 lg:pb-0">
         <MobileHeader />
         {children}
       </main>

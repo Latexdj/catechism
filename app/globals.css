@@ -23,3 +23,9 @@ body {
 }
 
 .print-only { display: none; }
+
+/* iPhone safe area support for bottom nav */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+  height: calc(64px + env(safe-area-inset-bottom));
+}
