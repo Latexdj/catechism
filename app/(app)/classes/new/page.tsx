@@ -28,7 +28,7 @@ export default function NewClassPage() {
   return (
     <div className="flex-1 flex flex-col">
       <Header title="New Class" subtitle="Create a catechism class or cohort" />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
           <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

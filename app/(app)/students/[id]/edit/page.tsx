@@ -25,7 +25,7 @@ export default function EditStudentPage() {
   return (
     <div className="flex-1 flex flex-col">
       <Header title={`Edit: ${fullName(student as { firstName: string; middleName?: string; lastName: string })}`} subtitle="Update student information" />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <StudentForm
           initial={student as Record<string, string>}
           studentId={id}

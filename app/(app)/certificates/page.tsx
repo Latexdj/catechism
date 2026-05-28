@@ -226,7 +226,7 @@ export default function CertificatesPage() {
   return (
     <div className="flex-1 flex flex-col">
       <Header title="Certificates" subtitle="Print baptismal and confirmation certificates" />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <Suspense fallback={<p className="text-gray-400">Loading...</p>}>
           <CertificateContent />
         </Suspense>

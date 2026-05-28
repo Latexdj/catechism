@@ -77,7 +77,7 @@ export default function ClassDetailPage() {
         title={cls.name}
         subtitle={`${cls.year} · ${cls.sacramentType} · ${cls.members.length} student${cls.members.length !== 1 ? "s" : ""}`}
       />
-      <div className="p-8 space-y-6">
+      <div className="p-4 sm:p-8 space-y-6">
         {/* Class Info */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
           <div><span className="text-xs text-gray-400 uppercase tracking-wide block">Catechist</span><span className="font-medium text-gray-700">{cls.catechist || "—"}</span></div>

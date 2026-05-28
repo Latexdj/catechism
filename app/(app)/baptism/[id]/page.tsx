@@ -77,7 +77,7 @@ export default function BaptismEditPage() {
           </Link>
         }
       />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
           <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
             <h2 className="font-semibold text-[#1e3a5f] text-sm uppercase tracking-wide border-b border-gray-100 pb-2">Baptism Details</h2>

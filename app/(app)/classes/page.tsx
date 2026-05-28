@@ -70,7 +70,7 @@ export default function ClassesPage() {
           </Link>
         }
       />
-      <div className="p-8 space-y-8">
+      <div className="p-4 sm:p-8 space-y-8">
         {loading && <p className="text-gray-400">Loading...</p>}
 
         {!loading && active.length === 0 && inactive.length === 0 && (

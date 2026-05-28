@@ -43,7 +43,7 @@ export default function BaptismPage() {
           </Link>
         }
       />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <div className="mb-6 relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input

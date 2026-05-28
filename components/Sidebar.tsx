@@ -29,7 +29,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex flex-col w-64 min-h-screen bg-[#1e3a5f] text-white shadow-xl">
+    <aside className="hidden lg:flex flex-col w-64 min-h-screen bg-[#1e3a5f] text-white shadow-xl">
       <div className="px-6 py-6 border-b border-blue-800">
         <div className="flex items-center gap-2 mb-1">
           <span className="text-[#c9a84c] text-2xl">✝</span>

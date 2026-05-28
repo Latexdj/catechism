@@ -57,7 +57,7 @@ export default function DashboardPage() {
     <div className="flex-1 flex flex-col">
       <Header title="Dashboard" subtitle="Overview of parish sacramental records" />
 
-      <div className="p-8 space-y-8">
+      <div className="p-4 sm:p-8 space-y-8">
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           {statCards.map(({ key, label, icon: Icon, color }) => (

@@ -95,7 +95,7 @@ export default function ConfirmationEditPage() {
           </Link>
         }
       />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {/* Notification Banner */}
         {form.notificationStatus === "PENDING" && (
           <div className="max-w-3xl mb-6 bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start justify-between gap-4">

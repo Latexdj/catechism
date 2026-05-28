@@ -130,7 +130,7 @@ export default function NewBaptismPage() {
   return (
     <div className="flex-1 flex flex-col">
       <Header title="New Baptism Record" subtitle="Record a baptism in the parish register" />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <Suspense><NewBaptismForm /></Suspense>
       </div>
     </div>

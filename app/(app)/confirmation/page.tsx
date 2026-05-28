@@ -41,7 +41,7 @@ export default function ConfirmationPage() {
           </Link>
         }
       />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <div className="mb-6 relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input type="text" placeholder="Search by name, bishop, or parish..." value={search} onChange={(e) => setSearch(e.target.value)}

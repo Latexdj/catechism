@@ -83,7 +83,7 @@ export default function StudentDetailPage() {
         }
       />
 
-      <div className="p-8 space-y-6 max-w-4xl">
+      <div className="p-4 sm:p-8 space-y-6 max-w-4xl">
         {/* Personal Info */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-sm font-semibold text-[#1e3a5f] uppercase tracking-wide mb-4 border-b border-gray-100 pb-2">

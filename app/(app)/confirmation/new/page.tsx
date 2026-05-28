@@ -117,7 +117,7 @@ export default function NewConfirmationPage() {
   return (
     <div className="flex-1 flex flex-col">
       <Header title="New Confirmation Record" subtitle="Record a confirmation in the parish register" />
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         <Suspense><NewConfirmationForm /></Suspense>
       </div>
     </div>
