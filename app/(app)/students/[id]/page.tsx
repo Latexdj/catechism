@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
 import { fullName, formatDate, formatRegisterRef } from "@/lib/utils";
-import { Edit, Droplets, Flame, BookOpen, Plus } from "lucide-react";
+import { Edit, Droplets, Flame, BookOpen, Plus, Printer } from "lucide-react";
 
 interface StudentDetail {
   id: string;
@@ -74,12 +74,20 @@ export default function StudentDetailPage() {
         title={fullName(student)}
         subtitle="Student Record"
         actions={
-          <Link
-            href={`/students/${id}/edit`}
-            className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
-          >
-            <Edit size={15} /> Edit
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/students/${id}/baptismal-card`}
+              className="flex items-center gap-2 border border-[#1e3a5f] text-[#1e3a5f] px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors"
+            >
+              <Printer size={15} /> Baptismal Card
+            </Link>
+            <Link
+              href={`/students/${id}/edit`}
+              className="flex items-center gap-2 bg-[#1e3a5f] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2d5f8a] transition-colors"
+            >
+              <Edit size={15} /> Edit
+            </Link>
+          </div>
         }
       />
 

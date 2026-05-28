@@ -19,7 +19,8 @@ body {
 @media print {
   .no-print { display: none !important; }
   .print-only { display: block !important; }
-  body { background: white; }
+  body { background: white; margin: 0; padding: 0; }
+  @page { margin: 10mm; size: A5; }
 }
 
 .print-only { display: none; }
