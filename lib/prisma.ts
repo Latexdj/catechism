@@ -4,9 +4,13 @@ import path from "path";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
+function getDbUrl(): string {
+  if (process.env.DATABASE_URL) return process.env.DATABASE_URL;
+  return `file:${path.resolve(process.cwd(), "dev.db")}`;
+}
+
 function createPrismaClient() {
-  const dbPath = path.resolve(process.cwd(), "dev.db");
-  const adapter = new PrismaBetterSqlite3({ url: `file:${dbPath}` });
+  const adapter = new PrismaBetterSqlite3({ url: getDbUrl() });
   return new PrismaClient({ adapter });
 }
 
