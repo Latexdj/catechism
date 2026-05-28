@@ -88,8 +88,7 @@ export async function downloadExcelTemplate(type: TemplateType) {
   // ── Sheet 1: Instructions ──────────────────────────────────────────────────
 
   const info = wb.addWorksheet("Instructions", {
-    tabColor: { argb: NAVY },
-    properties: { defaultColWidth: 70 },
+    properties: { defaultColWidth: 70, tabColor: { argb: NAVY } },
   });
 
   info.getColumn(1).width = 5;
@@ -170,7 +169,7 @@ export async function downloadExcelTemplate(type: TemplateType) {
   // ── Sheet 2: Data Entry ───────────────────────────────────────────────────
 
   const ws = wb.addWorksheet("Data Entry", {
-    tabColor: { argb: GOLD },
+    properties: { tabColor: { argb: GOLD } },
   });
 
   // Set column widths
