@@ -158,7 +158,7 @@ export default function ImportPanel({ type, open, onClose, onSuccess }: Props) {
                   <div className="flex items-start gap-3 mb-4">
                     <FileSpreadsheet size={28} className="text-[#c9a84c] flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-bold text-sm">Professional Excel Template (.xlsx)</p>
+                      <p className="font-bold text-sm">Excel Template (.xlsx)</p>
                       <p className="text-xs text-blue-200 mt-0.5">Colour-coded headers · Instructions sheet · 100 data rows</p>
                     </div>
                   </div>
