@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { BookOpen, ScrollText, Search, LogOut } from "lucide-react";
+import { BookOpen, ScrollText, Search, Upload, LogOut } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 const moreItems = [
   { href: "/classes",      label: "Classes & Cohorts", icon: BookOpen },
   { href: "/certificates", label: "Certificates",      icon: ScrollText },
   { href: "/reports",      label: "Reports & Search",  icon: Search },
+  { href: "/import",       label: "Import Records",    icon: Upload },
 ];
 
 interface Props {
@@ -21,7 +22,6 @@ export default function MoreSheet({ open, onClose }: Props) {
   const pathname = usePathname();
   const prevPathname = useRef(pathname);
 
-  // Close when route actually changes
   useEffect(() => {
     if (pathname !== prevPathname.current) {
       prevPathname.current = pathname;
@@ -29,7 +29,6 @@ export default function MoreSheet({ open, onClose }: Props) {
     }
   }, [pathname, onClose]);
 
-  // Lock body scroll while open
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
@@ -38,7 +37,6 @@ export default function MoreSheet({ open, onClose }: Props) {
 
   return (
     <>
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className={`fixed inset-0 z-40 bg-black/50 lg:hidden transition-opacity duration-200 ${
@@ -46,13 +44,11 @@ export default function MoreSheet({ open, onClose }: Props) {
         }`}
       />
 
-      {/* Sheet */}
       <div
         className={`fixed left-0 right-0 bottom-16 z-50 bg-white rounded-t-3xl shadow-2xl lg:hidden transition-transform duration-300 ease-out ${
           open ? "translate-y-0" : "translate-y-full"
         }`}
       >
-        {/* Pull handle */}
         <div className="flex justify-center pt-3 pb-2">
           <div className="w-10 h-1 rounded-full bg-gray-300" />
         </div>

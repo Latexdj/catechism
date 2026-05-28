@@ -11,18 +11,20 @@ import {
   BookOpen,
   ScrollText,
   Search,
+  Upload,
   LogOut,
   ChevronRight,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/students", label: "Students", icon: Users },
-  { href: "/baptism", label: "Baptism Records", icon: Droplets },
-  { href: "/confirmation", label: "Confirmation Records", icon: Flame },
-  { href: "/classes", label: "Classes & Cohorts", icon: BookOpen },
-  { href: "/certificates", label: "Certificates", icon: ScrollText },
-  { href: "/reports", label: "Reports & Search", icon: Search },
+  { href: "/dashboard",    label: "Dashboard",             icon: LayoutDashboard },
+  { href: "/students",     label: "Students",              icon: Users },
+  { href: "/baptism",      label: "Baptism Records",       icon: Droplets },
+  { href: "/confirmation", label: "Confirmation Records",  icon: Flame },
+  { href: "/classes",      label: "Classes & Cohorts",     icon: BookOpen },
+  { href: "/certificates", label: "Certificates",          icon: ScrollText },
+  { href: "/reports",      label: "Reports & Search",      icon: Search },
+  { href: "/import",       label: "Import Records",        icon: Upload },
 ];
 
 export default function Sidebar() {
