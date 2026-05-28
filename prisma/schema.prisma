@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("CATECHIST")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id            String   @id @default(cuid())
+  firstName     String
+  lastName      String
+  middleName    String?
+  dateOfBirth   DateTime
+  placeOfBirth  String?
+  address       String?
+  contactNumber String?
+  email         String?
+  fatherName    String?
+  motherName    String?
+  notes         String?
+  isArchived    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  baptism      BaptismRecord?
+  confirmation ConfirmationRecord?
+  classMembers ClassMember[]
+}
+
+model RegisterBook {
+  id          String   @id @default(cuid())
+  type        String
+  bookNumber  Int
+  pageNumber  Int
+  entryNumber Int
+  createdAt   DateTime @default(now())
+
+  baptismRecord      BaptismRecord?
+  confirmationRecord ConfirmationRecord?
+
+  @@unique([type, bookNumber, pageNumber, entryNumber])
+}
+
+model BaptismRecord {
+  id             String    @id @default(cuid())
+  studentId      String    @unique
+  registerBookId String    @unique
+  dateOfBaptism  DateTime
+  placeOfBaptism String
+  diocese        String?
+  minister       String
+  godfatherName  String
+  godmotherName  String
+  witnesses      String?
+  marginalNotes  String?
+  notifiedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  student      Student      @relation(fields: [studentId], references: [id])
+  registerBook RegisterBook @relation(fields: [registerBookId], references: [id])
+}
+
+model ConfirmationRecord {
+  id                    String    @id @default(cuid())
+  studentId             String    @unique
+  registerBookId        String    @unique
+  dateOfConfirmation    DateTime
+  placeOfConfirmation   String
+  diocese               String?
+  confirmingBishop      String
+  sponsorName           String
+  confirmationSaintName String
+  baptismalParish       String
+  baptismalBookRef      String?
+  notificationSentAt    DateTime?
+  notificationStatus    String    @default("PENDING")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  student      Student      @relation(fields: [studentId], references: [id])
+  registerBook RegisterBook @relation(fields: [registerBookId], references: [id])
+}
+
+model CatechismClass {
+  id            String   @id @default(cuid())
+  name          String
+  year          Int
+  sacramentType String
+  catechist     String?
+  description   String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  members ClassMember[]
+}
+
+model ClassMember {
+  id        String   @id @default(cuid())
+  classId   String
+  studentId String
+  joinedAt  DateTime @default(now())
+
+  class   CatechismClass @relation(fields: [classId], references: [id])
+  student Student        @relation(fields: [studentId], references: [id])
+
+  @@unique([classId, studentId])
+}
