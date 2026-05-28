@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/Header";
+import BaptismLifeEventsFields from "@/components/BaptismLifeEventsFields";
 import { fullName, formatDate, formatRegisterRef } from "@/lib/utils";
 import { ScrollText } from "lucide-react";
 
@@ -17,8 +18,25 @@ interface BaptismRecord {
   godmotherName: string;
   witnesses?: string;
   marginalNotes?: string;
+  firstCommunionDate?: string;
+  firstCommunionPlace?: string;
+  marriageDate?: string;
+  marriagePlace?: string;
+  marriageNo?: string;
+  husbandName?: string;
+  husbandBaptismDate?: string;
+  husbandBaptismNo?: string;
+  wifeName?: string;
+  wifeBaptismDate?: string;
+  wifeBaptismNo?: string;
+  signedBy?: string;
   student: { id: string; firstName: string; middleName?: string; lastName: string };
   registerBook: { bookNumber: number; pageNumber: number; entryNumber: number };
+}
+
+function toDateInput(val?: string | null) {
+  if (!val) return "";
+  return val.split("T")[0];
 }
 
 export default function BaptismEditPage() {
@@ -32,14 +50,26 @@ export default function BaptismEditPage() {
     fetch(`/api/baptism/${id}`).then((r) => r.json()).then((data) => {
       setRecord(data);
       setForm({
-        dateOfBaptism: data.dateOfBaptism?.split("T")[0] || "",
-        placeOfBaptism: data.placeOfBaptism || "",
-        diocese: data.diocese || "",
-        minister: data.minister || "",
-        godfatherName: data.godfatherName || "",
-        godmotherName: data.godmotherName || "",
-        witnesses: data.witnesses || "",
-        marginalNotes: data.marginalNotes || "",
+        dateOfBaptism:        toDateInput(data.dateOfBaptism),
+        placeOfBaptism:       data.placeOfBaptism        || "",
+        diocese:              data.diocese               || "",
+        minister:             data.minister              || "",
+        godfatherName:        data.godfatherName         || "",
+        godmotherName:        data.godmotherName         || "",
+        witnesses:            data.witnesses             || "",
+        marginalNotes:        data.marginalNotes         || "",
+        firstCommunionDate:   toDateInput(data.firstCommunionDate),
+        firstCommunionPlace:  data.firstCommunionPlace   || "",
+        marriageDate:         toDateInput(data.marriageDate),
+        marriagePlace:        data.marriagePlace         || "",
+        marriageNo:           data.marriageNo            || "",
+        husbandName:          data.husbandName           || "",
+        husbandBaptismDate:   toDateInput(data.husbandBaptismDate),
+        husbandBaptismNo:     data.husbandBaptismNo      || "",
+        wifeName:             data.wifeName              || "",
+        wifeBaptismDate:      toDateInput(data.wifeBaptismDate),
+        wifeBaptismNo:        data.wifeBaptismNo         || "",
+        signedBy:             data.signedBy              || "",
       });
     });
   }, [id]);
@@ -77,8 +107,11 @@ export default function BaptismEditPage() {
           </Link>
         }
       />
+
       <div className="p-4 sm:p-8">
         <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl">
+
+          {/* Baptism details */}
           <section className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
             <h2 className="font-semibold text-[#1e3a5f] text-sm uppercase tracking-wide border-b border-gray-100 pb-2">Baptism Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -92,8 +125,21 @@ export default function BaptismEditPage() {
               <div className="sm:col-span-2"><label className={labelClass}>Marginal Notes</label><textarea value={form.marginalNotes} onChange={set("marginalNotes")} rows={2} className={inputClass} /></div>
             </div>
           </section>
+
+          {/* Life events */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+            <div className="relative flex justify-center">
+              <span className="bg-gray-100 px-4 text-xs font-semibold text-gray-400 uppercase tracking-widest py-1 rounded-full">
+                Subsequent Life Events
+              </span>
+            </div>
+          </div>
+
+          <BaptismLifeEventsFields form={form} set={set} />
+
           <div className="flex gap-3">
-            <button type="submit" disabled={saving} className="bg-[#1e3a5f] text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2d5f8a] transition-colors disabled:opacity-60">
+            <button type="submit" disabled={saving} className="bg-[#1e3a5f] text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#2d5f8a] disabled:opacity-60 transition-colors">
               {saving ? "Saving..." : "Update Record"}
             </button>
             <button type="button" onClick={() => router.back()} className="px-6 py-2.5 rounded-lg text-sm border border-gray-300 hover:bg-gray-50">Cancel</button>

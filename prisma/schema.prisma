@@ -65,8 +65,31 @@ model BaptismRecord {
   witnesses      String?
   marginalNotes  String?
   notifiedAt     DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+
+  // First Holy Communion
+  firstCommunionDate  DateTime?
+  firstCommunionPlace String?
+
+  // Marriage
+  marriageDate  DateTime?
+  marriagePlace String?
+  marriageNo    String?
+
+  // Husband
+  husbandName        String?
+  husbandBaptismDate DateTime?
+  husbandBaptismNo   String?
+
+  // Wife
+  wifeName        String?
+  wifeBaptismDate DateTime?
+  wifeBaptismNo   String?
+
+  // Sign-off
+  signedBy  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   student      Student      @relation(fields: [studentId], references: [id])
   registerBook RegisterBook @relation(fields: [registerBookId], references: [id])

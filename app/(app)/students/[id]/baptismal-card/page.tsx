@@ -3,8 +3,33 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { fullName, formatDate, formatRegisterRef } from "@/lib/utils";
+import { fullName, formatDate } from "@/lib/utils";
 import { Printer, ArrowLeft } from "lucide-react";
+
+interface BaptismRecord {
+  id: string;
+  dateOfBaptism: string;
+  placeOfBaptism: string;
+  diocese?: string;
+  minister: string;
+  godfatherName: string;
+  godmotherName: string;
+  witnesses?: string;
+  marginalNotes?: string;
+  firstCommunionDate?: string;
+  firstCommunionPlace?: string;
+  marriageDate?: string;
+  marriagePlace?: string;
+  marriageNo?: string;
+  husbandName?: string;
+  husbandBaptismDate?: string;
+  husbandBaptismNo?: string;
+  wifeName?: string;
+  wifeBaptismDate?: string;
+  wifeBaptismNo?: string;
+  signedBy?: string;
+  registerBook: { bookNumber: number; pageNumber: number; entryNumber: number };
+}
 
 interface StudentDetail {
   id: string;
@@ -16,16 +41,7 @@ interface StudentDetail {
   address?: string;
   fatherName?: string;
   motherName?: string;
-  baptism: {
-    dateOfBaptism: string;
-    placeOfBaptism: string;
-    diocese?: string;
-    minister: string;
-    godfatherName: string;
-    godmotherName: string;
-    marginalNotes?: string;
-    registerBook: { bookNumber: number; pageNumber: number; entryNumber: number };
-  } | null;
+  baptism: BaptismRecord | null;
   confirmation: {
     dateOfConfirmation: string;
     placeOfConfirmation: string;
@@ -36,30 +52,41 @@ interface StudentDetail {
   } | null;
 }
 
-// Dotted line field — renders a label and a dotted fill line with an optional right-side note
+// ─── Field row with dotted underline ─────────────────────────────────────────
+
 function Field({
   label,
   value,
-  note,
   noteLabel,
-  className = "",
+  note,
 }: {
   label: string;
   value?: string | null;
-  note?: string | null;
   noteLabel?: string;
-  className?: string;
+  note?: string | null;
 }) {
   return (
-    <div className={`flex items-baseline gap-1 py-[3px] ${className}`}>
-      <span className="text-[11pt] font-serif whitespace-nowrap flex-shrink-0">{label}</span>
-      <span className="flex-1 border-b border-dotted border-gray-500 min-w-0 px-1 text-[10pt] font-serif text-gray-800 leading-tight">
+    <div style={{ display: "flex", alignItems: "baseline", gap: "3px", padding: "2.5px 0" }}>
+      <span style={{ fontSize: "10.5pt", fontFamily: "Georgia, serif", whiteSpace: "nowrap", flexShrink: 0 }}>
+        {label}
+      </span>
+      <span style={{
+        flex: 1, borderBottom: "1px dotted #555",
+        minWidth: 0, padding: "0 4px", fontSize: "9.5pt",
+        fontFamily: "Georgia, serif", color: "#222", lineHeight: 1.3,
+      }}>
         {value || ""}
       </span>
       {noteLabel && (
         <>
-          <span className="text-[11pt] font-serif whitespace-nowrap flex-shrink-0 ml-1">{noteLabel}</span>
-          <span className="w-20 border-b border-dotted border-gray-500 px-1 text-[10pt] font-serif text-gray-800 leading-tight flex-shrink-0">
+          <span style={{ fontSize: "10.5pt", fontFamily: "Georgia, serif", whiteSpace: "nowrap", flexShrink: 0, marginLeft: "4px" }}>
+            {noteLabel}
+          </span>
+          <span style={{
+            width: "60px", borderBottom: "1px dotted #555",
+            padding: "0 4px", fontSize: "9.5pt", fontFamily: "Georgia, serif",
+            color: "#222", flexShrink: 0,
+          }}>
             {note || ""}
           </span>
         </>
@@ -67,6 +94,130 @@ function Field({
     </div>
   );
 }
+
+// ─── Divider ──────────────────────────────────────────────────────────────────
+
+function Divider() {
+  return <div style={{ borderBottom: "0.5px solid #ddd", margin: "3px 0" }} />;
+}
+
+// ─── Card content ─────────────────────────────────────────────────────────────
+
+function CardContent({ student }: { student: StudentDetail }) {
+  const bap  = student.baptism;
+  const conf = student.confirmation;
+
+  const birthLine = [
+    student.dateOfBirth ? formatDate(student.dateOfBirth) : "",
+    student.placeOfBirth ?? "",
+  ].filter(Boolean).join("  —  ");
+
+  const baptismNo = bap  ? String(bap.registerBook.entryNumber)  : "";
+  const confirmNo = conf ? String(conf.registerBook.entryNumber) : "";
+
+  return (
+    <div style={{
+      width: "148mm", minHeight: "210mm", padding: "12mm 14mm",
+      background: "white", boxSizing: "border-box",
+      fontFamily: "Georgia, 'Times New Roman', serif",
+    }}>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: "5mm" }}>
+        <div style={{ fontSize: "7.5pt", letterSpacing: "0.15em", color: "#666", marginBottom: "1mm" }}>
+          ROMAN CATHOLIC
+        </div>
+        <div style={{ fontSize: "14pt", fontWeight: "bold", letterSpacing: "0.04em" }}>
+          DIOCESE OF WA
+        </div>
+        <div style={{ fontSize: "8.5pt", color: "#777", marginTop: "0.5mm" }}>
+          Baptismal Record Card
+        </div>
+        <div style={{ borderBottom: "1.5px solid #000", marginTop: "3.5mm" }} />
+      </div>
+
+      {/* Personal */}
+      <Field label="Name:" value={fullName(student)} />
+      <Field label="Residence:" value={student.address} />
+      <Field label="Birth:" value={birthLine} />
+      <Field label="Father:" value={student.fatherName} />
+      <Field label="Mother:" value={student.motherName} />
+
+      <Divider />
+
+      {/* Baptism */}
+      <Field label="Place of Baptism:" value={bap?.placeOfBaptism} noteLabel="No." note={baptismNo} />
+      <Field label="Date of Baptism:" value={bap ? formatDate(bap.dateOfBaptism) : ""} />
+      <Field label="Minister:" value={bap?.minister} />
+      <Field label="Godfather:" value={bap?.godfatherName} />
+      <Field label="Godmother:" value={bap?.godmotherName} />
+
+      <Divider />
+
+      {/* 1st Communion */}
+      <Field
+        label="1st Comm. The"
+        value={bap?.firstCommunionDate ? formatDate(bap.firstCommunionDate) : ""}
+        noteLabel="Place"
+        note={bap?.firstCommunionPlace || ""}
+      />
+
+      <Divider />
+
+      {/* Confirmation */}
+      <Field label="Place of Confirmation:" value={conf?.placeOfConfirmation} />
+      <Field label="Date of Confirmation:" value={conf ? formatDate(conf.dateOfConfirmation) : ""} noteLabel="No." note={confirmNo} />
+      {conf && (
+        <>
+          <Field label="Confirming Bishop:" value={conf.confirmingBishop} />
+          <Field label="Sponsor:" value={conf.sponsorName} />
+          <Field label="Confirmation Name:" value={conf.confirmationSaintName} />
+        </>
+      )}
+
+      <Divider />
+
+      {/* Marriage */}
+      <Field label="Where Married:" value={bap?.marriagePlace} />
+      <Field label="Date of Married:" value={bap?.marriageDate ? formatDate(bap.marriageDate) : ""} noteLabel="No." note={bap?.marriageNo || ""} />
+
+      {/* Husband bracket */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "3px", margin: "3mm 0 1mm" }}>
+        <span style={{ fontSize: "10.5pt", minWidth: "50px", lineHeight: 1.6 }}>Husband</span>
+        <span style={{ fontSize: "24pt", lineHeight: 1, marginTop: "-5px", color: "#444", marginRight: "3px" }}>{"{"}</span>
+        <div style={{ flex: 1 }}>
+          <Field label="Name:" value={bap?.husbandName} />
+          <Field label="Date of Bapt.:" value={bap?.husbandBaptismDate ? formatDate(bap.husbandBaptismDate) : ""} noteLabel="No." note={bap?.husbandBaptismNo || ""} />
+        </div>
+      </div>
+
+      {/* Wife bracket */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "3px", margin: "2mm 0 1mm" }}>
+        <span style={{ fontSize: "10.5pt", minWidth: "50px", lineHeight: 1.6 }}>Wife</span>
+        <span style={{ fontSize: "24pt", lineHeight: 1, marginTop: "-5px", color: "#444", marginRight: "3px" }}>{"{"}</span>
+        <div style={{ flex: 1 }}>
+          <Field label="Name:" value={bap?.wifeName} />
+          <Field label="Date of Bapt.:" value={bap?.wifeBaptismDate ? formatDate(bap.wifeBaptismDate) : ""} noteLabel="No." note={bap?.wifeBaptismNo || ""} />
+          <Field label="Signed:" value={bap?.signedBy} />
+        </div>
+      </div>
+
+      {/* Marginal notes */}
+      {bap?.marginalNotes && (
+        <>
+          <Divider />
+          <Field label="Notes:" value={bap.marginalNotes} />
+        </>
+      )}
+
+      {/* Footer */}
+      <div style={{ borderTop: "0.5px solid #ccc", marginTop: "5mm", paddingTop: "2mm", fontSize: "6.5pt", color: "#aaa", textAlign: "center" }}>
+        Parish Records System · Printed {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function BaptismalCardPage() {
   const { id } = useParams<{ id: string }>();
@@ -77,33 +228,14 @@ export default function BaptismalCardPage() {
   }, [id]);
 
   if (!student) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <p className="text-gray-400">Loading...</p>
-      </div>
-    );
+    return <div className="flex-1 flex items-center justify-center"><p className="text-gray-400">Loading...</p></div>;
   }
-
-  const bap = student.baptism;
-  const conf = student.confirmation;
-
-  const baptismNo    = bap  ? String(bap.registerBook.entryNumber)  : "";
-  const confirmNo    = conf ? String(conf.registerBook.entryNumber) : "";
-
-  const birthLine = [
-    student.dateOfBirth ? formatDate(student.dateOfBirth) : "",
-    student.placeOfBirth ?? "",
-  ].filter(Boolean).join("  —  ");
 
   return (
     <div className="min-h-screen bg-gray-100">
-
-      {/* Toolbar — hidden on print */}
+      {/* Toolbar */}
       <div className="no-print flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
-        <Link
-          href={`/students/${id}`}
-          className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#1e3a5f]"
-        >
+        <Link href={`/students/${id}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#1e3a5f]">
           <ArrowLeft size={16} /> Back to Student
         </Link>
         <button
@@ -114,146 +246,16 @@ export default function BaptismalCardPage() {
         </button>
       </div>
 
-      {/* Card preview area */}
-      <div className="no-print flex items-start justify-center py-10 px-4">
+      {/* Preview */}
+      <div className="no-print flex justify-center py-10 px-4">
         <div className="bg-white shadow-2xl rounded-lg overflow-hidden" style={{ width: "148mm" }}>
-          <CardContent student={student} bap={bap} conf={conf} birthLine={birthLine} baptismNo={baptismNo} confirmNo={confirmNo} />
+          <CardContent student={student} />
         </div>
       </div>
 
-      {/* Print-only output — fills the page */}
+      {/* Print output */}
       <div className="print-only">
-        <CardContent student={student} bap={bap} conf={conf} birthLine={birthLine} baptismNo={baptismNo} confirmNo={confirmNo} />
-      </div>
-    </div>
-  );
-}
-
-function CardContent({
-  student, bap, conf, birthLine, baptismNo, confirmNo,
-}: {
-  student: StudentDetail;
-  bap: StudentDetail["baptism"];
-  conf: StudentDetail["confirmation"];
-  birthLine: string;
-  baptismNo: string;
-  confirmNo: string;
-}) {
-  return (
-    <div
-      className="bg-white font-serif"
-      style={{
-        width: "148mm",
-        minHeight: "210mm",
-        padding: "12mm 14mm",
-        boxSizing: "border-box",
-        fontFamily: "Georgia, 'Times New Roman', serif",
-      }}
-    >
-      {/* Diocese header */}
-      <div style={{ textAlign: "center", marginBottom: "6mm" }}>
-        <div style={{ fontSize: "8pt", letterSpacing: "0.12em", color: "#555", marginBottom: "1mm" }}>
-          ROMAN CATHOLIC
-        </div>
-        <div style={{ fontSize: "15pt", fontWeight: "bold", letterSpacing: "0.04em" }}>
-          DIOCESE OF WA
-        </div>
-        <div style={{ fontSize: "9pt", color: "#666", marginTop: "1mm" }}>
-          Baptismal Record Card
-        </div>
-        <div style={{ borderBottom: "1.5px solid #000", marginTop: "4mm" }} />
-      </div>
-
-      {/* Fields */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "1mm" }}>
-
-        <Field label="Name:" value={fullName(student)} />
-        <Field label="Residence:" value={student.address} />
-        <Field label="Birth:" value={birthLine} />
-        <Field label="Father:" value={student.fatherName} />
-        <Field label="Mother:" value={student.motherName} />
-
-        <div style={{ borderBottom: "0.5px solid #ddd", margin: "2mm 0" }} />
-
-        <Field
-          label="Place of Baptism:"
-          value={bap?.placeOfBaptism}
-          noteLabel="No."
-          note={baptismNo}
-        />
-        <Field label="Date of Baptism:" value={bap ? formatDate(bap.dateOfBaptism) : ""} />
-        <Field label="Minister:" value={bap?.minister} />
-        <Field label="Godfather:" value={bap?.godfatherName} />
-        <Field label="Godmother:" value={bap?.godmotherName} />
-
-        <div style={{ borderBottom: "0.5px solid #ddd", margin: "2mm 0" }} />
-
-        {/* 1st Communion — blank, filled manually */}
-        <Field label="1st Comm. The" value="" noteLabel="Place" note="" />
-
-        <div style={{ borderBottom: "0.5px solid #ddd", margin: "2mm 0" }} />
-
-        <Field
-          label="Place of Confirmation:"
-          value={conf?.placeOfConfirmation}
-        />
-        <Field
-          label="Date of Confirmation:"
-          value={conf ? formatDate(conf.dateOfConfirmation) : ""}
-          noteLabel="No."
-          note={confirmNo}
-        />
-        {conf && (
-          <>
-            <Field label="Confirming Bishop:" value={conf.confirmingBishop} />
-            <Field label="Sponsor:" value={conf.sponsorName} />
-            <Field label="Confirmation Name:" value={conf.confirmationSaintName} />
-          </>
-        )}
-
-        <div style={{ borderBottom: "0.5px solid #ddd", margin: "2mm 0" }} />
-
-        {/* Marriage — blank, filled manually */}
-        <Field label="Where Married:" value="" />
-        <Field label="Date of Married:" value="" noteLabel="No." note="" />
-
-        <div style={{ margin: "3mm 0" }}>
-          {/* Husband bracket */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "4px", marginBottom: "1mm" }}>
-            <span style={{ fontSize: "11pt", minWidth: "52px" }}>Husband</span>
-            <span style={{ fontSize: "22pt", lineHeight: "1", marginTop: "-4px", marginRight: "2px", color: "#333" }}>{"{"}</span>
-            <div style={{ flex: 1 }}>
-              <Field label="Name:" value="" />
-              <Field label="Date of Bapt.:" value="" noteLabel="No." note="" />
-            </div>
-          </div>
-        </div>
-
-        <div style={{ margin: "3mm 0" }}>
-          {/* Wife bracket */}
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "4px" }}>
-            <span style={{ fontSize: "11pt", minWidth: "52px" }}>Wife</span>
-            <span style={{ fontSize: "22pt", lineHeight: "1", marginTop: "-4px", marginRight: "2px", color: "#333" }}>{"{"}</span>
-            <div style={{ flex: 1 }}>
-              <Field label="Name:" value="" />
-              <Field label="Date of Bapt.:" value="" noteLabel="No." note="" />
-              <Field label="Signed:" value="" />
-            </div>
-          </div>
-        </div>
-
-        {/* Marginal notes if any */}
-        {bap?.marginalNotes && (
-          <>
-            <div style={{ borderBottom: "0.5px solid #ddd", margin: "2mm 0" }} />
-            <Field label="Notes:" value={bap.marginalNotes} />
-          </>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div style={{ borderTop: "0.5px solid #ccc", marginTop: "6mm", paddingTop: "3mm", fontSize: "7pt", color: "#999", textAlign: "center" }}>
-        Parish Records System · Printed {new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+        <CardContent student={student} />
       </div>
     </div>
   );

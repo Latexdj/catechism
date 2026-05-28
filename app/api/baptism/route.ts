@@ -21,10 +21,7 @@ export async function GET(req: NextRequest) {
           ],
         }
       : undefined,
-    include: {
-      student: true,
-      registerBook: true,
-    },
+    include: { student: true, registerBook: true },
     orderBy: { dateOfBaptism: "desc" },
   });
 
@@ -51,16 +48,33 @@ export async function POST(req: NextRequest) {
 
     const record = await tx.baptismRecord.create({
       data: {
-        studentId: body.studentId,
+        studentId:      body.studentId,
         registerBookId: registerBook.id,
-        dateOfBaptism: new Date(body.dateOfBaptism),
+        dateOfBaptism:  new Date(body.dateOfBaptism),
         placeOfBaptism: body.placeOfBaptism,
-        diocese: body.diocese || null,
-        minister: body.minister,
-        godfatherName: body.godfatherName,
-        godmotherName: body.godmotherName,
-        witnesses: body.witnesses || null,
-        marginalNotes: body.marginalNotes || null,
+        diocese:        body.diocese        || null,
+        minister:       body.minister,
+        godfatherName:  body.godfatherName,
+        godmotherName:  body.godmotherName,
+        witnesses:      body.witnesses      || null,
+        marginalNotes:  body.marginalNotes  || null,
+        // 1st Communion
+        firstCommunionDate:  body.firstCommunionDate  ? new Date(body.firstCommunionDate)  : null,
+        firstCommunionPlace: body.firstCommunionPlace || null,
+        // Marriage
+        marriageDate:  body.marriageDate  ? new Date(body.marriageDate)  : null,
+        marriagePlace: body.marriagePlace || null,
+        marriageNo:    body.marriageNo    || null,
+        // Husband
+        husbandName:        body.husbandName        || null,
+        husbandBaptismDate: body.husbandBaptismDate ? new Date(body.husbandBaptismDate) : null,
+        husbandBaptismNo:   body.husbandBaptismNo   || null,
+        // Wife
+        wifeName:        body.wifeName        || null,
+        wifeBaptismDate: body.wifeBaptismDate ? new Date(body.wifeBaptismDate) : null,
+        wifeBaptismNo:   body.wifeBaptismNo   || null,
+        // Sign-off
+        signedBy: body.signedBy || null,
       },
       include: { student: true, registerBook: true },
     });

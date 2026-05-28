@@ -30,6 +30,18 @@ interface StudentDetail {
     godmotherName: string;
     witnesses?: string;
     marginalNotes?: string;
+    firstCommunionDate?: string;
+    firstCommunionPlace?: string;
+    marriageDate?: string;
+    marriagePlace?: string;
+    marriageNo?: string;
+    husbandName?: string;
+    husbandBaptismDate?: string;
+    husbandBaptismNo?: string;
+    wifeName?: string;
+    wifeBaptismDate?: string;
+    wifeBaptismNo?: string;
+    signedBy?: string;
     registerBook: { bookNumber: number; pageNumber: number; entryNumber: number };
   } | null;
   confirmation: {
@@ -136,17 +148,70 @@ export default function StudentDetailPage() {
             )}
           </div>
           {student.baptism ? (
-            <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              <InfoRow label="Date of Baptism" value={formatDate(student.baptism.dateOfBaptism)} />
-              <InfoRow label="Place" value={student.baptism.placeOfBaptism} />
-              <InfoRow label="Diocese" value={student.baptism.diocese} />
-              <InfoRow label="Minister" value={student.baptism.minister} />
-              <InfoRow label="Godfather" value={student.baptism.godfatherName} />
-              <InfoRow label="Godmother" value={student.baptism.godmotherName} />
-              <InfoRow label="Witnesses" value={student.baptism.witnesses} />
-              <InfoRow label="Register Ref." value={formatRegisterRef(student.baptism.registerBook.bookNumber, student.baptism.registerBook.pageNumber, student.baptism.registerBook.entryNumber)} />
-              <InfoRow label="Marginal Notes" value={student.baptism.marginalNotes} />
-            </dl>
+            <div className="space-y-5">
+              <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <InfoRow label="Date of Baptism" value={formatDate(student.baptism.dateOfBaptism)} />
+                <InfoRow label="Place" value={student.baptism.placeOfBaptism} />
+                <InfoRow label="Diocese" value={student.baptism.diocese} />
+                <InfoRow label="Minister" value={student.baptism.minister} />
+                <InfoRow label="Godfather" value={student.baptism.godfatherName} />
+                <InfoRow label="Godmother" value={student.baptism.godmotherName} />
+                <InfoRow label="Witnesses" value={student.baptism.witnesses} />
+                <InfoRow label="Register Ref." value={formatRegisterRef(student.baptism.registerBook.bookNumber, student.baptism.registerBook.pageNumber, student.baptism.registerBook.entryNumber)} />
+                <InfoRow label="Marginal Notes" value={student.baptism.marginalNotes} />
+              </dl>
+
+              {/* Life events — only shown if at least one has data */}
+              {(student.baptism.firstCommunionDate || student.baptism.marriageDate || student.baptism.husbandName || student.baptism.wifeName) && (
+                <div className="border-t border-gray-100 pt-4 space-y-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Subsequent Life Events</p>
+
+                  {(student.baptism.firstCommunionDate || student.baptism.firstCommunionPlace) && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 mb-2">First Holy Communion</p>
+                      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <InfoRow label="Date" value={formatDate(student.baptism.firstCommunionDate)} />
+                        <InfoRow label="Place" value={student.baptism.firstCommunionPlace} />
+                      </dl>
+                    </div>
+                  )}
+
+                  {(student.baptism.marriageDate || student.baptism.marriagePlace) && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 mb-2">Marriage</p>
+                      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <InfoRow label="Date" value={formatDate(student.baptism.marriageDate)} />
+                        <InfoRow label="Place" value={student.baptism.marriagePlace} />
+                        <InfoRow label="Register No." value={student.baptism.marriageNo} />
+                      </dl>
+                    </div>
+                  )}
+
+                  {student.baptism.husbandName && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 mb-2">Husband</p>
+                      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <InfoRow label="Name" value={student.baptism.husbandName} />
+                        <InfoRow label="Date of Baptism" value={formatDate(student.baptism.husbandBaptismDate)} />
+                        <InfoRow label="Register No." value={student.baptism.husbandBaptismNo} />
+                      </dl>
+                    </div>
+                  )}
+
+                  {student.baptism.wifeName && (
+                    <div>
+                      <p className="text-xs font-semibold text-gray-500 mb-2">Wife</p>
+                      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        <InfoRow label="Name" value={student.baptism.wifeName} />
+                        <InfoRow label="Date of Baptism" value={formatDate(student.baptism.wifeBaptismDate)} />
+                        <InfoRow label="Register No." value={student.baptism.wifeBaptismNo} />
+                        <InfoRow label="Signed By" value={student.baptism.signedBy} />
+                      </dl>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           ) : (
             <p className="text-sm text-gray-400">No baptism record on file.</p>
           )}
